@@ -58,7 +58,6 @@ lagtext.place(relx = 0.5, rely = 0.5, anchor = CENTER)
 lag = Scale(root, from_= 0, to = 2000, tickinterval = 500, length = 200, orient = HORIZONTAL)
 lag.place(relx = 0.5, rely = 0.6, anchor = CENTER)
 
-
 clickbtn = Button(root, width = 11, height = 2, text = "Start clicking", command = start_click)
 clickbtn.place(relx = 0.5, rely = 0.8, anchor = CENTER)
 
