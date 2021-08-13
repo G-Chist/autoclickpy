@@ -26,6 +26,7 @@ def on_click(x, y, button, pressed):
     global recording
     if button == mouse.Button.left and recording and pressed:
         clicker_actions.append((x, y))
+        print(x, " ", y)
 
 def on_press(key):
     if recording:
@@ -37,12 +38,14 @@ def on_press(key):
 
 def start_rec():
     #print("Started recording!")
-    global recording
+    global recording, stopbtn
+    stopbtn.place(relx = 0.5, rely = 0.25, anchor = CENTER)
     recording = True
 
 def stop_rec():
     #print("Stopped recording!")
-    global recording
+    global recording, stopbtn
+    stopbtn.place_forget()
     recording = False
 
 def shownumber():
@@ -57,7 +60,8 @@ def hidenumber():
 
 def start_click():
     #print("Started clicking!")
-    global mousecontrol, keyboardcontrol, recording, clicker_actions, repeats
+    global mousecontrol, keyboardcontrol, recording, clicker_actions, repeats, stopbtn
+    stopbtn.place_forget()
     if recording:
         clicker_actions.pop()
         recording = False
@@ -81,7 +85,7 @@ def start_click():
 
 
 listenerm = mouse.Listener(on_click = on_click)
-listenerm.start()
+listenerm.start(),
 listenerk = keyboard.Listener(on_press = on_press)
 listenerk.start()
 
@@ -94,7 +98,6 @@ recbtn = Button(root, width = 11, height = 2, text = "Start recording", command 
 recbtn.place(relx = 0.5, rely = 0.1, anchor = CENTER)
 
 stopbtn = Button(root, width = 11, height = 2, text = "Stop recording", command = stop_rec)
-stopbtn.place(relx = 0.5, rely = 0.25, anchor = CENTER)
 
 lagtext = Label(root, text = "Delay between clicks (milliseconds)")
 lagtext.place(relx = 0.5, rely = 0.37, anchor = CENTER)
@@ -104,7 +107,7 @@ lag.place(relx = 0.5, rely = 0.47, anchor = CENTER)
 radiovar = BooleanVar()
 radiovar.set(1)
 finite = Radiobutton(text = 'Repeat X times',variable = radiovar, command = shownumber, value = 0)
-infinite = Radiobutton(text = 'Repeat until ESC is pressed', variable = radiovar, command = hidenumber, value = 1)
+infinite = Radiobutton(text = 'Repeat once', variable = radiovar, command = hidenumber, value = 1)
 finite.place(relx = 0.5, rely = 0.6, anchor = CENTER)
 infinite.place(relx = 0.5, rely = 0.65, anchor = CENTER)
 repeats = Entry(root,  width = 20)
