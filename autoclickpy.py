@@ -87,7 +87,7 @@ listenerk.start()
 
 root = Tk()
 root.title('AutoClickPy')
-root.geometry("300x450")
+root.geometry("350x500")
 root.bind("<Escape>", lambda event: root.destroy())
 
 recbtn = Button(root, width = 11, height = 2, text = "Start recording", command = start_rec)
@@ -112,6 +112,9 @@ repeats.bind("<FocusIn>", lambda args: repeats.delete('0', 'end') if not isint(r
 repeats.bind("<Button-1>", lambda args: repeats.delete('0', 'end') if not isint(repeats.get()) else args)
 
 clickbtn = Button(root, width = 11, height = 2, text = "Start clicking", command = start_click)
-clickbtn.place(relx = 0.5, rely = 0.9, anchor = CENTER)
+clickbtn.place(relx = 0.5, rely = 0.8, anchor = CENTER)
+
+descrilabel = Label(root, text = "This program records and repeats mouse and keyboard clicks.")
+descrilabel.place(relx = 0.5, rely = 0.9, anchor = CENTER)
 
 root.mainloop()
