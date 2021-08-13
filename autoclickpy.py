@@ -1,11 +1,12 @@
-import pynput.keyboard as ke
+import pynput.keyboard as keyboard
 import pynput.mouse as mouse
 import time
 from tkinter import *
 
-positions = []
+clicker_actions = []
 recording = False
 mousecontrol = mouse.Controller()
+keyboardcontrol = keyboard.Controller()
 
 def isint(arg):
     try:
@@ -14,10 +15,25 @@ def isint(arg):
     except ValueError:
         return False
 
+def islist(arg):
+    try:
+        arg1 = arg[0]
+        return True
+    except TypeError or ValueError:
+        return False
+
 def on_click(x, y, button, pressed):
     global recording
     if button == mouse.Button.left and recording and pressed:
-        positions.append((x, y))
+        clicker_actions.append((x, y))
+
+def on_press(key):
+    if recording:
+        try:
+            clicker_actions.append(key.char)
+        except AttributeError:
+            #clicker_actions.append(key)
+            pass
 
 def start_rec():
     #print("Started recording!")
@@ -41,11 +57,11 @@ def hidenumber():
 
 def start_click():
     #print("Started clicking!")
-    global mousecontrol, recording, positions, repeats
+    global mousecontrol, keyboardcontrol, recording, clicker_actions, repeats
     if recording:
-        positions.pop()
+        clicker_actions.pop()
         recording = False
-    positions.pop()
+    clicker_actions.pop()
     delay = lag.get()
     if not isint(repeats.get()) and len(repeats.get()) > 0:
         reps = 1
@@ -54,15 +70,20 @@ def start_click():
     else:
         reps = 1
     for i in range(reps):
-        for i in positions:
-            mousecontrol.position = i
-            mousecontrol.click(mouse.Button.left, 1)
-            time.sleep(delay / 1000)
-    positions = []
+        for i in clicker_actions:
+            if type(i) is tuple:
+                mousecontrol.position = i
+                mousecontrol.click(mouse.Button.left, 1)
+                time.sleep(delay / 1000)
+            else:
+                keyboardcontrol.type(i)
+    clicker_actions = []
 
 
-listener = mouse.Listener(on_click = on_click)
-listener.start()
+listenerm = mouse.Listener(on_click = on_click)
+listenerm.start()
+listenerk = keyboard.Listener(on_press = on_press)
+listenerk.start()
 
 root = Tk()
 root.title('AutoClickPy')
@@ -87,7 +108,7 @@ infinite = Radiobutton(text = 'Repeat until ESC is pressed', variable = radiovar
 finite.place(relx = 0.5, rely = 0.6, anchor = CENTER)
 infinite.place(relx = 0.5, rely = 0.65, anchor = CENTER)
 repeats = Entry(root,  width = 20)
-repeats.bind("<FocusIn>", lambda args: repeats.delete('0', 'end'))
+repeats.bind("<FocusIn>", lambda args: repeats.delete('0', 'end') if not isint(repeats.get()) else args)
 repeats.bind("<Button-1>", lambda args: repeats.delete('0', 'end') if not isint(repeats.get()) else args)
 
 clickbtn = Button(root, width = 11, height = 2, text = "Start clicking", command = start_click)
