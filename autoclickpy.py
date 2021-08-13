@@ -74,9 +74,9 @@ def start_click():
             if type(i) is tuple:
                 mousecontrol.position = i
                 mousecontrol.click(mouse.Button.left, 1)
-                time.sleep(delay / 1000)
             else:
                 keyboardcontrol.type(i)
+            time.sleep(delay / 1000)
     clicker_actions = []
 
 
