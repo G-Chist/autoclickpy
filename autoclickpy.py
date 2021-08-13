@@ -26,15 +26,13 @@ def on_click(x, y, button, pressed):
     global recording
     if button == mouse.Button.left and recording and pressed:
         clicker_actions.append((x, y))
-        print(x, " ", y)
 
 def on_press(key):
     if recording:
         try:
             clicker_actions.append(key.char)
         except AttributeError:
-            #clicker_actions.append(key)
-            pass
+            clicker_actions.append(key)
 
 def start_rec():
     #print("Started recording!")
@@ -45,6 +43,7 @@ def start_rec():
 def stop_rec():
     #print("Stopped recording!")
     global recording, stopbtn
+    clicker_actions.pop()
     stopbtn.place_forget()
     recording = False
 
@@ -65,7 +64,6 @@ def start_click():
     if recording:
         clicker_actions.pop()
         recording = False
-    clicker_actions.pop()
     delay = lag.get()
     if not isint(repeats.get()) and len(repeats.get()) > 0:
         reps = 1
@@ -74,12 +72,16 @@ def start_click():
     else:
         reps = 1
     for i in range(reps):
-        for i in clicker_actions:
-            if type(i) is tuple:
-                mousecontrol.position = i
+        for j in clicker_actions:
+            if type(j) is tuple:
+                mousecontrol.position = j
                 mousecontrol.click(mouse.Button.left, 1)
+            elif type(j) is str:
+                print(j)
+                keyboardcontrol.type(str(j))
             else:
-                keyboardcontrol.type(i)
+                keyboardcontrol.press(j)
+                keyboardcontrol.release(j)
             time.sleep(delay / 1000)
     clicker_actions = []
 
